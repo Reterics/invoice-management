@@ -4,6 +4,7 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "../../pages/api/auth/[...nextauth]";
 import SessionProvider from "@/app/SessionProvider";
 import Login from "@/app/Login";
+import Header from "@/components/header";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +18,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
       <SessionProvider session={session}>
-          {!session ? (<Login /> ): children}
+          {!session ? (<Login /> ): (<div><Header />{children}</div>)}
       </SessionProvider>
       </body>
     </html>
