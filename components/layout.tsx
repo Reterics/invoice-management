@@ -4,16 +4,15 @@ import Header from "./header";
 
 
 export default function Layout({
-                                             children,
-                                         }: {
+     children,
+ }: {
     children: React.ReactNode
 }) {
     const session = useSession();
-    console.error(session);
-
     return (
         <>
-            {!session || session.status === 'unauthenticated' ? (<Login /> ): (<div><Header />{children}</div>)}
+            {!session || session.status === 'unauthenticated' ? (<Login /> ): (<div><Header />
+                <div className="p-2">{children}</div></div>)}
         </>
     )
 }

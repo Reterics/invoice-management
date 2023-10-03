@@ -1,6 +1,6 @@
 
 export interface InvoiceUser {
-    id?: number|string,
+    id?: string,
     supplierName?: string,
     supplierTaxNumber?: string,
     supplierPostCode?: string,
