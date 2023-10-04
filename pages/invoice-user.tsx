@@ -13,6 +13,7 @@ import Layout from "../components/layout";
 import {InvoiceUser} from "@/src/types/general";
 import InvoiceUserModal from "@/components/modals/InvoiceUserModal";
 import {db} from "@/src/firebase/config";
+import {useSession} from "next-auth/react";
 
 export const emptyInvoiceUser = {
     supplierName: "",
@@ -34,18 +35,28 @@ export default function InvoiceUser() {
     const [users, setUsers] = useState([] as InvoiceUser[]);
     const [currentUser, setCurrentUser] = useState({...emptyInvoiceUser} as InvoiceUser);
     const [showNewUser, setShowNewUser] = useState(false);
+    const session = useSession();
     const dbName = 'invoice_users';
 
     const saveUser = async () => {
+        const now = new Date().getTime();
         if (currentUser.id) {
             // If there is an ID we need to update
             const userRef = doc(db, dbName, currentUser.id);
-            await updateDoc(userRef, currentUser as DocumentData);
+            await updateDoc(userRef, {
+                ...currentUser,
+                modifiedBy: session?.data?.user?.email,
+                modifiedAt: now
+            } as DocumentData);
             setCurrentUser({...emptyInvoiceUser});
             setShowNewUser(false);
         } else if (currentUser.supplierName) {
             const userRef = doc(collection(db, dbName));
-            await setDoc(userRef, currentUser as DocumentData, {merge: true});
+            await setDoc(userRef, {
+                ...currentUser,
+                createdBy: session?.data?.user?.email,
+                createdAt: now
+            } as DocumentData, {merge: true});
             setCurrentUser({...emptyInvoiceUser});
             setShowNewUser(false);
         } else {
@@ -78,7 +89,7 @@ export default function InvoiceUser() {
 
     return (
         <Layout>
-            <div className="flex justify-between">
+            <div className="flex justify-between max-w-screen-xl m-auto">
                 <div />
                 <button type="button"
                         className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
@@ -89,7 +100,7 @@ export default function InvoiceUser() {
                     Create User
                 </button>
             </div>
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg max-w-screen-xl w-full mt-2">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg max-w-screen-xl m-auto w-full mt-2">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
