@@ -1,11 +1,12 @@
 import React from "react";
+import {InvoiceUserModalInput} from "@/src/types/modals";
 
 
-export default function InvoiceUserModal({ visible, onClose, currentUser, setCurrentUser, onSave }) {
+export default function InvoiceUserModal({ visible, onClose, currentUser, setCurrentUser, onSave }: InvoiceUserModalInput) {
 
     const handleOnClose = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
-        if (target.id === 'modalContainer') {
+        if (target.id === 'InvoiceUserModal') {
             onClose();
         }
     };
@@ -23,14 +24,14 @@ export default function InvoiceUserModal({ visible, onClose, currentUser, setCur
 
     return (
         <div
-            id="modalContainer"
+            id="InvoiceUserModal"
             onClick={handleOnClose}
             className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
             flex justify-center items-center"
         >
             <div className="bg-white p-4 rounded w-[36rem]">
                 <h1 className="font-semibold text-center text-xl text-gray-700">
-                    Add Invoice User
+                    Edit Invoice User
                 </h1>
                 <p className="text-center text-gray-700 mb-5">Get info from <a
                     href="https://onlineszamla.nav.gov.hu/home">onlineszamla.nav.gov.hu</a></p>

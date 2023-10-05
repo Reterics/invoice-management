@@ -1,10 +1,95 @@
 import Layout from "../components/layout";
 import {BsFillTrashFill, BsPencilSquare} from "react-icons/bs";
-import {useState} from "react";
-import {Invoice} from "@/src/types/general";
+import {useEffect, useState} from "react";
+import {Invoice, InvoiceUser} from "@/src/types/general";
+import InvoiceModal from "@/components/modals/InvoiceModal";
+import {useSession} from "next-auth/react";
+import {collection, deleteDoc, doc, DocumentData, setDoc, updateDoc} from "firebase/firestore";
+import {db, firebaseCollections, getCollection} from "@/src/firebase/config";
+
+export const emptyInvoice = {
+    supplierName: "",
+    supplierTaxNumber: "",
+    supplierPostCode: "",
+    supplierTown: "",
+    supplierStreetName: "",
+    supplierStreet: "",
+    supplierAddress: "",
+    supplierBankAccountNumber: "",
+
+    customerName: "",
+    customerTaxNumber: "",
+    customerPostCode: "",
+    customerTown: "",
+    customerStreetName: "",
+    customerStreet: "",
+    customerAddress: "",
+    customerCountry: "",
+
+    invoiceNumber: "",
+    invoiceCategory: 'SIMPLIFIED',
+    invoiceIssueDate: "",
+    invoiceDeliveryDate: "",
+    invoiceCurrency: "",
+    invoiceExchangeRate: "",
+    invoicePaymentMethod: 'CASH',
+    invoiceAppearance: 'ELECTRONIC',
+    invoiceGrossAmount: "",
+
+    items: [],
+
+    transactionID: "",
+    unixID: ""
+} as Invoice;
 
 export default function Home() {
+    const [users, setUsers] = useState([] as InvoiceUser[]);
     const [invoices, setInvoices] = useState([] as Invoice[]);
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+    const [currentInvoice, setCurrentInvoice] = useState({...emptyInvoice});
+    const session = useSession();
+
+    const saveInvoice = async () => {
+        const now = new Date().getTime();
+        if (currentInvoice.id) {
+            // If there is an ID we need to update
+            const userRef = doc(db, firebaseCollections.invoices, currentInvoice.id);
+            await updateDoc(userRef, {
+                ...currentInvoice,
+                modifiedBy: session?.data?.user?.email,
+                modifiedAt: now
+            } as DocumentData);
+            setCurrentInvoice({...emptyInvoice});
+            setShowInvoiceModal(false);
+        } else if (currentInvoice.items && currentInvoice.items.length) {
+            const userRef = doc(collection(db, firebaseCollections.invoices));
+            await setDoc(userRef, {
+                ...currentInvoice,
+                createdBy: session?.data?.user?.email,
+                createdAt: now
+            } as DocumentData, {merge: true});
+            setCurrentInvoice({...emptyInvoice});
+            setShowInvoiceModal(false);
+        } else {
+            alert('No items in invoice');
+        }
+    }
+
+    const deleteInvoice = async (id) => {
+        if (id && window.confirm('Are you sure you wish to delete this Invoice?')) {
+            await deleteDoc(doc(db, firebaseCollections.invoices, id));
+        }
+    };
+
+    const openInvoice = (invoice: Invoice) => {
+        setCurrentInvoice(Object.assign({}, emptyInvoice, invoice));
+        setShowInvoiceModal(true);
+    };
+
+    useEffect(() => {
+        getCollection(firebaseCollections.users).then(setUsers);
+        getCollection(firebaseCollections.invoices).then(setInvoices);
+    }, []);
 
     return (
         <Layout>
@@ -14,7 +99,7 @@ export default function Home() {
                         className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
                             focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2
                             dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-                        onClick={() => alert('Not implemented')}
+                        onClick={() => setShowInvoiceModal(true)}
                 >
                     Create Invoice
                 </button>
@@ -47,42 +132,51 @@ export default function Home() {
                     </tr>
                     </thead>
                     <tbody>
-                    {invoices.map((user) =>
-                        <tr key={user.id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+                    {invoices.map((invoice) =>
+                        <tr key={invoice.id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
 
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.id}
+                                {invoice.id}
                             </th>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.invoiceNumber}
+                                {invoice.invoiceNumber}
                             </th>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.invoiceCategory}
+                                {invoice.invoiceCategory}
                             </th>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.customerName}
+                                {invoice.customerName}
                             </th>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.invoiceGrossAmount}
+                                {invoice.invoiceGrossAmount}
                             </th>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {user.invoiceIssueDate}
+                                {invoice.invoiceIssueDate}
                             </th>
                             <td className="px-6 py-4 flex flex-row text-lg">
-                                <BsPencilSquare className="cursor-pointer ml-2" onClick={() => alert('Not Implemented')}/>
-                                <BsFillTrashFill className="cursor-pointer ml-2" onClick={() => alert('Not Implemented')}/>
+                                <BsPencilSquare className="cursor-pointer ml-2" onClick={() => openInvoice(invoice)}/>
+                                <BsFillTrashFill className="cursor-pointer ml-2" onClick={() =>
+                                    deleteInvoice(invoice.id)}/>
                             </td>
                         </tr>
                     )}
                     </tbody>
                 </table>
             </div>
+            <InvoiceModal
+                visible={showInvoiceModal}
+                onClose={() => setShowInvoiceModal(false)}
+                onSave={() => saveInvoice()}
+                currentInvoice={currentInvoice}
+                setCurrentInvoice={setCurrentInvoice}
+                users={users}
+            />
         </Layout>
 
     )

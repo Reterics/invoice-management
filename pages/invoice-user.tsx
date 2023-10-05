@@ -12,7 +12,7 @@ import {BsFillTrashFill, BsPencilSquare} from "react-icons/bs";
 import Layout from "../components/layout";
 import {InvoiceUser} from "@/src/types/general";
 import InvoiceUserModal from "@/components/modals/InvoiceUserModal";
-import {db} from "@/src/firebase/config";
+import {db, firebaseCollections, getCollection} from "@/src/firebase/config";
 import {useSession} from "next-auth/react";
 
 export const emptyInvoiceUser = {
@@ -36,13 +36,12 @@ export default function InvoiceUser() {
     const [currentUser, setCurrentUser] = useState({...emptyInvoiceUser} as InvoiceUser);
     const [showNewUser, setShowNewUser] = useState(false);
     const session = useSession();
-    const dbName = 'invoice_users';
 
     const saveUser = async () => {
         const now = new Date().getTime();
         if (currentUser.id) {
             // If there is an ID we need to update
-            const userRef = doc(db, dbName, currentUser.id);
+            const userRef = doc(db, firebaseCollections.users, currentUser.id);
             await updateDoc(userRef, {
                 ...currentUser,
                 modifiedBy: session?.data?.user?.email,
@@ -51,7 +50,7 @@ export default function InvoiceUser() {
             setCurrentUser({...emptyInvoiceUser});
             setShowNewUser(false);
         } else if (currentUser.supplierName) {
-            const userRef = doc(collection(db, dbName));
+            const userRef = doc(collection(db, firebaseCollections.users));
             await setDoc(userRef, {
                 ...currentUser,
                 createdBy: session?.data?.user?.email,
@@ -66,7 +65,7 @@ export default function InvoiceUser() {
 
     const deleteUser = async (id) => {
         if (id && window.confirm('Are you sure you wish to delete this User?')) {
-            await deleteDoc(doc(db, dbName, id));
+            await deleteDoc(doc(db, firebaseCollections.users, id));
         }
     };
 
@@ -76,15 +75,7 @@ export default function InvoiceUser() {
     };
 
     useEffect(() => {
-        const q = query(collection(db, dbName));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const receivedUsers = [];
-            querySnapshot.forEach((doc) => {
-                receivedUsers.push({ ...doc.data(), id: doc.id });
-            });
-            setUsers(receivedUsers);
-            return () => unsubscribe()
-        })
+        getCollection(firebaseCollections.users).then(setUsers);
     }, []);
 
     return (

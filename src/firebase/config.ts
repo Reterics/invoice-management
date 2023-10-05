@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {collection, getFirestore, onSnapshot, query} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,6 +10,26 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
+
+export const firebaseCollections = {
+    users: process.env.NEXT_PUBLIC_FIREBASE_DB_USERS || 'invoice_users',
+    invoices: process.env.NEXT_PUBLIC_FIREBASE_DB_INVOICES || 'invoices',
+};
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+export const getCollection = (type: string) => {
+    return new Promise((resolve) => {
+        const q = query(collection(db, type));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const receivedUsers = [];
+            querySnapshot.forEach((doc) => {
+                receivedUsers.push({ ...doc.data(), id: doc.id });
+            });
+            resolve(receivedUsers);
+            return () => unsubscribe()
+        })
+    });
+};

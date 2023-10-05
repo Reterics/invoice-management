@@ -87,15 +87,10 @@ export interface Invoice {
     invoiceAppearance: 'ELECTRONIC'|'PAPER'|'EDI'|'UNKNOWN',
     invoiceGrossAmount: string,
 
-    items: InvoiceItem,
+    items: InvoiceItem[],
 
     transactionID: string,
     unixID: string,
-
-    login?: string,
-    password?: string,
-    signKey?: string,
-    exchangeKey?: string,
 
     createdBy?: string,
     createdAt?: number,
