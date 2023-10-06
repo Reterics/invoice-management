@@ -61,6 +61,7 @@ export default function Home() {
             } as DocumentData);
             setCurrentInvoice({...emptyInvoice});
             setShowInvoiceModal(false);
+            getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
         } else if (currentInvoice.items && currentInvoice.items.length) {
             const userRef = doc(collection(db, firebaseCollections.invoices));
             await setDoc(userRef, {
@@ -70,12 +71,13 @@ export default function Home() {
             } as DocumentData, {merge: true});
             setCurrentInvoice({...emptyInvoice});
             setShowInvoiceModal(false);
+            getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
         } else {
             alert('No items in invoice');
         }
     }
 
-    const deleteInvoice = async (id) => {
+    const deleteInvoice = async (id: string|undefined) => {
         if (id && window.confirm('Are you sure you wish to delete this Invoice?')) {
             await deleteDoc(doc(db, firebaseCollections.invoices, id));
         }
@@ -87,8 +89,8 @@ export default function Home() {
     };
 
     useEffect(() => {
-        getCollection(firebaseCollections.users).then(setUsers);
-        getCollection(firebaseCollections.invoices).then(setInvoices);
+        getCollection(firebaseCollections.users).then((users) => setUsers(users as InvoiceUser[]));
+        getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
     }, []);
 
     return (

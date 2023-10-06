@@ -24,11 +24,11 @@ export const getCollection = (type: string) => {
     return new Promise((resolve) => {
         const q = query(collection(db, type));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const receivedUsers = [];
+            const receivedData: object[] = [];
             querySnapshot.forEach((doc) => {
-                receivedUsers.push({ ...doc.data(), id: doc.id });
+                receivedData.push({ ...doc.data(), id: doc.id });
             });
-            resolve(receivedUsers);
+            resolve(receivedData);
             return () => unsubscribe()
         })
     });

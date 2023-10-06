@@ -27,10 +27,10 @@ export default function Login() {
                     </div>
                 </div>
             </header>
-            <footer class="pb-16 text-sm leading-6">
-                <div class="max-w-7xl mx-auto divide-y divide-slate-200 px-4 sm:px-6 md:px-8 dark:divide-slate-700">
+            <footer className="pb-16 text-sm leading-6">
+                <div className="max-w-7xl mx-auto divide-y divide-slate-200 px-4 sm:px-6 md:px-8 dark:divide-slate-700">
 
-                    <div class="mt-16 pt-10">
+                    <div className="mt-16 pt-10">
                         <a href="#" className="flex items-center">
                             <img src="./logo.png" className="h-8 mr-3" alt="Reterics Logo"/>
                             <div
