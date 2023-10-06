@@ -6,7 +6,7 @@ import {
     doc,
     deleteDoc,
     setDoc,
-    updateDoc, query, onSnapshot
+    updateDoc
 } from 'firebase/firestore';
 import {BsFillTrashFill, BsPencilSquare} from "react-icons/bs";
 import Layout from "../components/layout";
@@ -49,6 +49,7 @@ export default function InvoiceUser() {
             } as DocumentData);
             setCurrentUser({...emptyInvoiceUser});
             setShowNewUser(false);
+            getCollection(firebaseCollections.users).then((users) => setUsers(users as InvoiceUser[]));
         } else if (currentUser.supplierName) {
             const userRef = doc(collection(db, firebaseCollections.users));
             await setDoc(userRef, {
@@ -58,12 +59,13 @@ export default function InvoiceUser() {
             } as DocumentData, {merge: true});
             setCurrentUser({...emptyInvoiceUser});
             setShowNewUser(false);
+            getCollection(firebaseCollections.users).then((users) => setUsers(users as InvoiceUser[]));
         } else {
             alert('Name is mandatory field');
         }
     };
 
-    const deleteUser = async (id) => {
+    const deleteUser = async (id: string|undefined) => {
         if (id && window.confirm('Are you sure you wish to delete this User?')) {
             await deleteDoc(doc(db, firebaseCollections.users, id));
         }
@@ -75,7 +77,7 @@ export default function InvoiceUser() {
     };
 
     useEffect(() => {
-        getCollection(firebaseCollections.users).then(setUsers);
+        getCollection(firebaseCollections.users).then((users) => setUsers(users as InvoiceUser[]));
     }, []);
 
     return (
