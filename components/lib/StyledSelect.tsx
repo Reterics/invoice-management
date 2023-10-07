@@ -1,17 +1,21 @@
+import {StyledSelectArgs} from "@/src/types/inputs";
 import React from "react";
-import {StyledInputArgs} from "@/src/types/inputs";
 
-export default function StyledInput({ value, onChange, type = "text", name, label }: StyledInputArgs) {
+export default function StyledSelect({ value, onSelect, name, label, options }: StyledSelectArgs) {
     return (
         <div className="relative z-0 w-full mb-6 group">
-            <input type={type} name={name}
+            <select name={name}
                    id={name}
                    value={value}
-                   onChange={onChange}
+                    onChange={onSelect}
                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0
                                    border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600
                                    dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                   placeholder=" " required/>
+                    placeholder=" " required >
+                {options.map((option, index) =>
+                    <option key={option.value} value={option.value}>{option.name}</option>
+                )}
+            </select>
             <label htmlFor={name}
                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400
                                    duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
