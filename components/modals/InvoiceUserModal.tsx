@@ -32,8 +32,8 @@ export default function InvoiceUserModal({ visible, onClose, currentUser, setCur
             className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
             flex justify-center items-center"
         >
-            <div className="bg-white p-4 rounded w-[36rem]">
-                <h1 className="font-semibold text-center text-xl text-gray-700">
+            <div className="bg-white p-4 rounded w-[36rem] dark:bg-gray-900">
+                <h1 className="font-semibold text-center text-xl text-gray-700 mb-4">
                     Edit Invoice User
                 </h1>
                 <p className="text-center text-gray-700 mb-5">Get info from <a
@@ -88,7 +88,7 @@ export default function InvoiceUserModal({ visible, onClose, currentUser, setCur
                             label="Back Account"
                         />
                     </div>
-                    <div className="grid md:grid-cols-3 md:gap-4">
+                    <div className="grid md:grid-cols-2 md:gap-4">
                         <StyledInput
                             type="text" name="supplierPostCode"
                             value={currentUser.supplierPostCode}
@@ -102,19 +102,18 @@ export default function InvoiceUserModal({ visible, onClose, currentUser, setCur
                             onChange={(e) => changeType(e, 'supplierTown')}
                             label="Town"
                         />
-
+                    </div>
+                    <div className="grid md:grid-cols-3 md:gap-6">
                         <StyledInput
                             type="text" name="supplierStreetName"
                             value={currentUser.supplierStreetName}
                             onChange={(e) => changeType(e, 'supplierStreetName')}
                             label="Street Type"
                         />
-                    </div>
-                    <div className="grid md:grid-cols-2 md:gap-6">
                         <StyledInput
-                            type="text" name="supplierStreet"
-                            value={currentUser.supplierStreet}
-                            onChange={(e) => changeType(e, 'supplierStreet')}
+                            type="text" name="supplierStreetCategory"
+                            value={currentUser.supplierStreetCategory}
+                            onChange={(e) => changeType(e, 'supplierStreetCategory')}
                             label="Street"
                         />
                         <StyledInput
