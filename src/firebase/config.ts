@@ -14,6 +14,7 @@ const firebaseConfig = {
 export const firebaseCollections = {
     users: process.env.NEXT_PUBLIC_FIREBASE_DB_USERS || 'invoice_users',
     invoices: process.env.NEXT_PUBLIC_FIREBASE_DB_INVOICES || 'invoices',
+    partners: process.env.NEXT_PUBLIC_FIREBASE_DB_PARTNERS || 'partners',
 };
 
 // Initialize Firebase

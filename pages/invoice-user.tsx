@@ -90,7 +90,7 @@ export default function InvoiceUser() {
                             dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
                         onClick={() => setShowNewUser(true)}
                 >
-                    Create User
+                    Add User
                 </button>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg max-w-screen-xl m-auto w-full mt-2">

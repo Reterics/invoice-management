@@ -22,16 +22,18 @@ export interface InvoiceUser {
     modifiedBy?: string
 }
 
-export interface Customer {
+export interface InvoicePartner {
     id?: string,
     customerName: string,
     customerTaxNumber: string,
     customerPostCode: string,
     customerTown: string,
     customerStreetName: string,
-    customerStreet: string,
+    customerStreetCategory: string,
     customerAddress: string,
     customerCountry: string,
+    customerBankAccountNumber: string,
+    customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY'
 }
 
 enum VatRate {

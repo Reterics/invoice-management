@@ -122,7 +122,7 @@ export default function InvoiceModal({
                                     value={currentInvoice.customerStreetCategory ? currentInvoice.customerStreetCategory : undefined}
                                     onSelect={(e) => changeType(
                                         e as unknown as ChangeEvent<HTMLInputElement>, 'customerStreetCategory')}
-                                    label="Country"
+                                    label="Street Type"
                                 />
                                 <StyledInput
                                     type="text" name="customerAddress"

@@ -1,7 +1,8 @@
-import React from "react";
+import React, {ChangeEvent} from "react";
 import {InvoiceUserModalInput} from "@/src/types/modals";
-import {InvoiceUser} from "@/src/types/general";
+import {InvoiceConstants, InvoiceUser} from "@/src/types/general";
 import StyledInput from "@/components/lib/StyledInput";
+import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
 
 
 export default function InvoiceUserModal({ visible, onClose, currentUser, setCurrentUser, onSave }: InvoiceUserModalInput) {
@@ -108,13 +109,21 @@ export default function InvoiceUserModal({ visible, onClose, currentUser, setCur
                             type="text" name="supplierStreetName"
                             value={currentUser.supplierStreetName}
                             onChange={(e) => changeType(e, 'supplierStreetName')}
-                            label="Street Type"
+                            label="Street Name"
                         />
                         <StyledInput
                             type="text" name="supplierStreetCategory"
                             value={currentUser.supplierStreetCategory}
                             onChange={(e) => changeType(e, 'supplierStreetCategory')}
                             label="Street"
+                        />
+                        <StyledSelect
+                            type="text" name="supplierStreetCategory"
+                            options={textToOptions(InvoiceConstants.customer.customerStreetCategory, undefined)}
+                            value={currentUser.supplierStreetCategory ? currentUser.supplierStreetCategory : undefined}
+                            onSelect={(e) => changeType(
+                                e as unknown as ChangeEvent<HTMLInputElement>, 'supplierStreetCategory')}
+                            label="Street Type"
                         />
                         <StyledInput
                             type="text" name="supplierAddress"

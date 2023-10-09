@@ -1,4 +1,4 @@
-import {Invoice, InvoiceUser} from "@/src/types/general";
+import {Invoice, InvoicePartner, InvoiceUser} from "@/src/types/general";
 
 export interface InvoiceModalInput {
     visible: boolean,
@@ -14,5 +14,13 @@ export interface InvoiceUserModalInput {
     onClose: Function,
     currentUser: InvoiceUser,
     setCurrentUser: Function,
+    onSave: Function
+}
+
+export interface InvoicePartnerModalInput {
+    visible: boolean,
+    onClose: Function,
+    currentPartner: InvoicePartner,
+    setCurrentPartner: Function,
     onSave: Function
 }
