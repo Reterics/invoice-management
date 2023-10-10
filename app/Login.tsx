@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { signIn } from "next-auth/react"
+import Image from "next/image";
 
 export default function Login() {
     return (
@@ -32,7 +33,7 @@ export default function Login() {
 
                     <div className="mt-16 pt-10">
                         <a href="#" className="flex items-center">
-                            <img src="./logo.png" className="h-8 mr-3" alt="Reterics Logo"/>
+                            <Image src="./logo.png" className="h-8 mr-3" alt="Reterics Logo"/>
                             <div
                                 className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white flex-row flex">Invoice Management
                                 <div className="text-sm pt-1 text ml-1">by Attila Reterics</div></div>

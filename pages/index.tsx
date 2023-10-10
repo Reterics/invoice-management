@@ -13,7 +13,7 @@ export const emptyInvoice = {
     supplierPostCode: "",
     supplierTown: "",
     supplierStreetName: "",
-    supplierStreet: "",
+    supplierStreetCategory: "",
     supplierAddress: "",
     supplierBankAccountNumber: "",
 
@@ -22,9 +22,10 @@ export const emptyInvoice = {
     customerPostCode: "",
     customerTown: "",
     customerStreetName: "",
-    customerStreet: "",
+    customerStreetCategory: "",
     customerAddress: "",
     customerCountry: "",
+    customerType: 'PERSON',
 
     invoiceNumber: "",
     invoiceCategory: 'SIMPLIFIED',

@@ -65,7 +65,7 @@ export default function InvoiceItemsTable ({
             <tbody>
             {
             items.map((item, index)=>
-                <tr className={index % 2 ? "bg-white border-b dark:bg-gray-800 dark:border-gray-600 h-[30px]" : "border-b dark:border-gray-600 h-[30px]"}>
+                <tr key={"item-"+index} className={index % 2 ? "bg-white border-b dark:bg-gray-800 dark:border-gray-600 h-[30px]" : "border-b dark:border-gray-600 h-[30px]"}>
                     <td> {item.lineNatureIndicator}</td>
                     <td> {item.productCodeCategory}</td>
                     <td> {item.productCodeValue}</td>
