@@ -56,6 +56,7 @@ export interface InvoiceItem {
     lineVatRate: VatRate,
     lineVatData: number,
     lineGrossAmountData: number,
+    lineDescription: string,
 }
 
 export interface Invoice {
@@ -111,14 +112,14 @@ export const InvoiceConstants = {
             productCodeCategory: ['OWN', 'VTSZ', 'SZJ', 'KN', 'AHK', 'CSK', 'KT', 'EJ', 'TESZOR', 'OTHER'],
             unitOfMeasure: ["PIECE", "KILOGRAM", "TON", "KWH", "DAY", "HOUR", "MINUTE", "MONTH", "LITER", "KILOMETER",
                 "CUBIC_METERI", "METER", "LINEAR_METERE", "CARTONT", "PACK", "OWN"],
-            lineVatRate: {
-                _27: VatRate._27,
-                _18: VatRate._18,
-                _5: VatRate._5,
-                _0: VatRate._0,
-                TAM: VatRate.TAM,
-                AAM: VatRate.AAM
-            }
+            lineVatRate: [
+                VatRate._27,
+                VatRate._18,
+                VatRate._5,
+                VatRate._0,
+                VatRate.TAM,
+                VatRate.AAM
+            ]
         }
     },
     customer: {
@@ -196,4 +197,9 @@ export const InvoiceConstants = {
             "zug",
         ]
     }
+}
+
+export interface InvoiceItemsTableType {
+    items: InvoiceItem[],
+    setItems: Function
 }

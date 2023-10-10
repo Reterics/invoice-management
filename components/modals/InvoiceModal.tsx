@@ -1,9 +1,11 @@
 import React, {ChangeEvent, SyntheticEvent, useState} from "react";
 import {InvoiceModalInput} from "@/src/types/modals";
 import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
-import {Invoice, InvoiceConstants, InvoiceUser} from "@/src/types/general";
+import {Invoice, InvoiceConstants, InvoiceItem, InvoiceUser} from "@/src/types/general";
 import {StyledSelectOption} from "@/src/types/inputs";
 import StyledInput from "@/components/lib/StyledInput";
+import InvoiceItemsTable from "@/components/InvoiceItemsTable";
+import {it} from "node:test";
 
 export default function InvoiceModal({
     visible,
@@ -51,7 +53,7 @@ export default function InvoiceModal({
             className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
             flex justify-center items-center"
         >
-            <div className="bg-white p-4 rounded w-[80vw] dark:bg-gray-900">
+            <div className="bg-white p-4 rounded w-[90vw] dark:bg-gray-900">
                 <h1 className="font-semibold text-center text-xl text-gray-700 mb-4">
                     Edit Invoice
                 </h1>
@@ -135,8 +137,12 @@ export default function InvoiceModal({
                         </div>
                     </div>
                     <div className="flex flex-row justify-evenly mb-2">
-                        <div className="w-full max-w-screen-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            Items
+                        <div className="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                            <h4>Invoice Items</h4>
+                            <InvoiceItemsTable
+                                items={currentInvoice.items}
+                                setItems={(items: InvoiceItem[]) => setCurrentInvoice({...currentInvoice, items:items})}
+                            />
                         </div>
 
                     </div>

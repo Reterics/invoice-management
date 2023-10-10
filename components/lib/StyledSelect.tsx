@@ -9,12 +9,12 @@ export const textToOptions = (strings: string[], names: string[]|undefined):  St
 
 export default function StyledSelect({ value, onSelect, name, label, options }: StyledSelectArgs) {
     return (
-        <div className="relative z-0 w-full mb-6 group">
+        <div className="relative z-0 w-full group mt-4">
             <select name={name}
                    id={name}
                    value={value}
                     onChange={onSelect}
-                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0
+                   className="block py-1.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0
                                    border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600
                                    dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600
                                    dark:bg-gray-800 dark:placeholder-gray-400 peer"
@@ -28,7 +28,7 @@ export default function StyledSelect({ value, onSelect, name, label, options }: 
                                    duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0]
                                    peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500
                                    peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
-                                   peer-focus:scale-75 peer-focus:-translate-y-6">{label || name}</label>
+                                   peer-focus:scale-75 peer-focus:-translate-y-6 whitespace-nowrap">{label || name}</label>
         </div>
     )
 }
