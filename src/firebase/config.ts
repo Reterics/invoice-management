@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {collection, getFirestore, onSnapshot, query} from 'firebase/firestore';
+import {collection, doc, getDoc, getFirestore, onSnapshot, query} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,7 +21,7 @@ export const firebaseCollections = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const getCollection = (type: string): Promise<object[]>  => {
+export const getCollection = (type: string): Promise<object[]> => {
     return new Promise((resolve) => {
         const q = query(collection(db, type));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -34,3 +34,13 @@ export const getCollection = (type: string): Promise<object[]>  => {
         })
     });
 };
+
+export const getById = async (id: string, collection: string): Promise<object|null> => {
+    const docRef = doc(db, collection, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
+    return null;
+}
