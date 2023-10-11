@@ -16,7 +16,11 @@ npm run start
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+![Screenshot4](./public/screenshot4.png)
+*Edit/Create Invoice Modal in the Dashboard*
+
 ![Screenshot3](./public/screenshot3.png)
+*Invoice Dashboard*
 
 ## Contribute
 

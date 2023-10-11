@@ -6,6 +6,32 @@ import {StyledSelectOption} from "@/src/types/inputs";
 import StyledInput from "@/components/lib/StyledInput";
 import InvoiceItemsTable from "@/components/InvoiceItemsTable";
 
+export const emptyInvoiceItem = {
+    lineNatureIndicator: 'SERVICE',
+    productCodeCategory: 'OWN',
+    productCodeValue: '',
+    quantity: 1,
+    unitOfMeasure: "OWN",
+    unitPrice: 0,
+    lineNetAmountData: 0,
+    lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0],
+    lineVatData: 0,
+    lineGrossAmountData: 0,
+    lineDescription: "",
+};
+
+export const getEmptyInvoiceItem = (invoiceCategory: string): InvoiceItem => {
+    if (invoiceCategory === 'SIMPLIFIED') {
+        return {
+            ...emptyInvoiceItem,
+            lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0]} as InvoiceItem;
+    }
+    return {
+        ...emptyInvoiceItem,
+        lineVatRate: InvoiceConstants.invoice.items.lineVatRateNormal[0]} as InvoiceItem;
+
+}
+
 export default function InvoiceModal({
     visible,
     onClose,
@@ -18,6 +44,8 @@ export default function InvoiceModal({
 
     const [supplier, setSupplier] = useState<InvoiceUser|undefined>(undefined);
     const [partner, setPartner] = useState<InvoicePartner|undefined>(undefined);
+    const [currentItem, setCurrentItem] =
+        useState<InvoiceItem>(getEmptyInvoiceItem(currentInvoice.invoiceCategory))
 
     const handleOnClose = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
@@ -25,6 +53,11 @@ export default function InvoiceModal({
             onClose();
         }
     };
+
+    const changeCategory = (e: React.ChangeEvent<HTMLInputElement>) => {
+        changeType(e, 'invoiceCategory');
+        setCurrentItem(getEmptyInvoiceItem(e.target.value));
+    }
 
     const changeType = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
         const value = e.target.value;
@@ -64,7 +97,7 @@ export default function InvoiceModal({
             flex justify-center items-center"
         >
             <div className="bg-white p-4 rounded w-[90vw] dark:bg-gray-900">
-                <h1 className="font-semibold text-center text-xl text-gray-700 mb-4">
+                <h1 className="font-semibold text-center text-xl text-gray-700 mb-4 dark:text-gray-200">
                     Edit Invoice
                 </h1>
 
@@ -94,8 +127,8 @@ export default function InvoiceModal({
                                     type="text" name="invoiceCategory"
                                     options={textToOptions(InvoiceConstants.invoice.invoiceCategory, undefined)}
                                     value={currentInvoice.invoiceCategory ? currentInvoice.invoiceCategory : undefined}
-                                    onSelect={(e) => changeType(
-                                        e as unknown as ChangeEvent<HTMLInputElement>, 'invoiceCategory')}
+                                    onSelect={(e) => changeCategory(
+                                        e as unknown as ChangeEvent<HTMLInputElement>)}
                                     label="Invoice Type"
                                 />
                                 <StyledSelect
@@ -187,13 +220,27 @@ export default function InvoiceModal({
                                 invoice={currentInvoice}
                                 items={currentInvoice.items}
                                 setItems={(items: InvoiceItem[]) => setCurrentInvoice({...currentInvoice, items:items})}
+                                currentItem={currentItem}
+                                setCurrentItem={setCurrentItem}
                             />
                         </div>
 
                     </div>
-                    <div className="flex flex-row justify-evenly mb-2">
-                        <div className="w-full max-w-screen-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            Summary
+                    <div className="flex flex-row justify-end mb-2">
+                        <div className="w-full max-w-[380px] p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                            <h4>Summary</h4>
+                            <table className="w-full text-xl text-left text-gray-500 dark:text-gray-400">
+                                <tbody>
+                                    <tr>
+                                        <td>Tax:</td>
+                                        <td>0 Ft</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Grand Total:</td>
+                                        <td>0 Ft</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </form>

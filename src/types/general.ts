@@ -45,9 +45,9 @@ enum VatRateSimplified {
     AAM = 0
 }
 enum VatRateNormal {
-    _27 = 0.2126,
-    _18 = 0.1525,
-    _5 = 0.0476,
+    _27 = 0.27,
+    _18 = 0.18,
+    _5 = 0.05,
     _0 = 0,
     TAM = 0,
     AAM = 0
@@ -220,5 +220,7 @@ export const InvoiceConstants = {
 export interface InvoiceItemsTableType {
     items: InvoiceItem[],
     setItems: Function,
-    invoice: Invoice
+    invoice: Invoice,
+    currentItem: InvoiceItem,
+    setCurrentItem: Function,
 }

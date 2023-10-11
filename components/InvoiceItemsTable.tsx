@@ -1,42 +1,17 @@
-import {Invoice, InvoiceConstants, InvoiceItem, InvoiceItemsTableType, InvoiceUser} from "@/src/types/general";
+import { InvoiceConstants, InvoiceItem, InvoiceItemsTableType, InvoiceUser} from "@/src/types/general";
 import {BsFillTrashFill, BsPlusCircleFill} from "react-icons/bs";
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent} from "react";
 import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
 import StyledInput from "@/components/lib/StyledInput";
-
-export const emptyInvoiceItem = {
-    lineNatureIndicator: 'SERVICE',
-    productCodeCategory: 'OWN',
-    productCodeValue: '',
-    quantity: 1,
-    unitOfMeasure: "OWN",
-    unitPrice: 0,
-    lineNetAmountData: 0,
-    lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0],
-    lineVatData: 0,
-    lineGrossAmountData: 0,
-    lineDescription: "",
-};
-export const getEmptyInvoiceItem = (invoice: Invoice): InvoiceItem => {
-    if (invoice && invoice.invoiceCategory === 'SIMPLIFIED') {
-        return {
-            ...emptyInvoiceItem,
-            lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0]} as InvoiceItem;
-    }
-    return {
-        ...emptyInvoiceItem,
-        lineVatRate: InvoiceConstants.invoice.items.lineVatRateNormal[0]} as InvoiceItem;
-
-}
+import {getEmptyInvoiceItem} from "@/components/modals/InvoiceModal";
 
 export default function InvoiceItemsTable ({
     invoice,
     items,
-    setItems
+    setItems,
+    currentItem,
+    setCurrentItem
 }: InvoiceItemsTableType) {
-    const [currentItem, setCurrentItem] =
-        useState<InvoiceItem>(getEmptyInvoiceItem(invoice))
-
     const deleteItem = (index: number) => {
         setItems(items.splice(index, 1));
     };
@@ -53,11 +28,7 @@ export default function InvoiceItemsTable ({
 
     const addItem = () => {
         setItems([...items, currentItem]);
-        setCurrentItem(getEmptyInvoiceItem(invoice));
-    };
-
-    const refreshUnitPrice = () => {
-
+        setCurrentItem(getEmptyInvoiceItem(invoice.invoiceCategory));
     };
 
     return (
