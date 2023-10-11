@@ -20,7 +20,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 *Edit/Create Invoice Modal in the Dashboard*
 
 ![Screenshot3](./public/screenshot3.png)
-*Invoice Dashboard*
+*User List page*
 
 ## Contribute
 
