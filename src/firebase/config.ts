@@ -21,7 +21,7 @@ export const firebaseCollections = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const getCollection = (type: string) => {
+export const getCollection = (type: string): Promise<object[]>  => {
     return new Promise((resolve) => {
         const q = query(collection(db, type));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {

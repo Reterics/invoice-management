@@ -6,6 +6,7 @@ export interface InvoiceModalInput {
     currentInvoice: Invoice,
     setCurrentInvoice: Function,
     users: InvoiceUser[],
+    partners: InvoicePartner[],
     onSave: Function
 }
 

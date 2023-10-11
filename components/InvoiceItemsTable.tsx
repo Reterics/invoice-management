@@ -1,4 +1,4 @@
-import {InvoiceConstants, InvoiceItem, InvoiceItemsTableType, InvoiceUser} from "@/src/types/general";
+import {Invoice, InvoiceConstants, InvoiceItem, InvoiceItemsTableType, InvoiceUser} from "@/src/types/general";
 import {BsFillTrashFill, BsPlusCircleFill} from "react-icons/bs";
 import React, {ChangeEvent, useState} from "react";
 import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
@@ -12,18 +12,30 @@ export const emptyInvoiceItem = {
     unitOfMeasure: "OWN",
     unitPrice: 0,
     lineNetAmountData: 0,
-    lineVatRate: InvoiceConstants.invoice.items.lineVatRate[0],
+    lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0],
     lineVatData: 0,
     lineGrossAmountData: 0,
     lineDescription: "",
 };
+export const getEmptyInvoiceItem = (invoice: Invoice): InvoiceItem => {
+    if (invoice && invoice.invoiceCategory === 'SIMPLIFIED') {
+        return {
+            ...emptyInvoiceItem,
+            lineVatRate: InvoiceConstants.invoice.items.lineVatRateSimplified[0]} as InvoiceItem;
+    }
+    return {
+        ...emptyInvoiceItem,
+        lineVatRate: InvoiceConstants.invoice.items.lineVatRateNormal[0]} as InvoiceItem;
+
+}
 
 export default function InvoiceItemsTable ({
+    invoice,
     items,
     setItems
 }: InvoiceItemsTableType) {
     const [currentItem, setCurrentItem] =
-        useState<InvoiceItem>({...emptyInvoiceItem} as InvoiceItem)
+        useState<InvoiceItem>(getEmptyInvoiceItem(invoice))
 
     const deleteItem = (index: number) => {
         setItems(items.splice(index, 1));
@@ -41,7 +53,11 @@ export default function InvoiceItemsTable ({
 
     const addItem = () => {
         setItems([...items, currentItem]);
-        setCurrentItem({...emptyInvoiceItem} as InvoiceItem);
+        setCurrentItem(getEmptyInvoiceItem(invoice));
+    };
+
+    const refreshUnitPrice = () => {
+
     };
 
     return (
@@ -155,8 +171,13 @@ export default function InvoiceItemsTable ({
                 <td className="min-w-[60px]">
                     <StyledSelect
                         type="text" name="lineVatRate"
-                        options={textToOptions(InvoiceConstants.invoice.items.lineVatRate as unknown as string[],
-                            undefined)}
+                        options={
+                            invoice.invoiceCategory === 'SIMPLIFIED' ?
+                                textToOptions(InvoiceConstants.invoice.items.lineVatRateSimplified as unknown as string[],
+                            undefined) :
+                                textToOptions(InvoiceConstants.invoice.items.lineVatRateNormal as unknown as string[],
+                                    undefined)
+                        }
                         value={currentItem.lineVatRate ? currentItem.lineVatRate : undefined}
                         onSelect={(e) => changeType(
                             e as unknown as ChangeEvent<HTMLInputElement>, 'lineVatRate')}

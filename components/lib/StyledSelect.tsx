@@ -19,8 +19,9 @@ export default function StyledSelect({ value, onSelect, name, label, options }: 
                                    dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600
                                    dark:bg-gray-800 dark:placeholder-gray-400 peer"
                     placeholder=" " required >
+                <option defaultChecked={true}>Please Select</option>
                 {options.map((option, index) =>
-                    <option key={option.value} value={option.value}>{option.name}</option>
+                    <option key={name + '_' + option.value + '_' + index} value={option.value}>{option.name}</option>
                 )}
             </select>
             <label htmlFor={name}

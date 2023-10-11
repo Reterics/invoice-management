@@ -1,7 +1,7 @@
 import Layout from "../components/layout";
 import {BsFillTrashFill, BsPencilSquare} from "react-icons/bs";
 import {useEffect, useState} from "react";
-import {Invoice, InvoiceUser} from "@/src/types/general";
+import {Invoice, InvoicePartner, InvoiceUser} from "@/src/types/general";
 import InvoiceModal from "@/components/modals/InvoiceModal";
 import {useSession} from "next-auth/react";
 import {collection, deleteDoc, doc, DocumentData, setDoc, updateDoc} from "firebase/firestore";
@@ -31,8 +31,9 @@ export const emptyInvoice = {
     invoiceCategory: 'SIMPLIFIED',
     invoiceIssueDate: "",
     invoiceDeliveryDate: "",
-    invoiceCurrency: "",
-    invoiceExchangeRate: "",
+    invoicePaymentDate: "",
+    invoiceCurrency: "HUF",
+    invoiceExchangeRate: "1",
     invoicePaymentMethod: 'CASH',
     invoiceAppearance: 'ELECTRONIC',
     invoiceGrossAmount: "",
@@ -43,11 +44,27 @@ export const emptyInvoice = {
     unixID: ""
 } as Invoice;
 
+export const getNextEmptyInvoice = (invoices: Invoice[]): Invoice => {
+    const todayString = new Date().toISOString().substring(0, 10);
+    const deadline = new Date();
+    deadline.setDate(deadline.getDate() + 8);
+    return {
+        ...emptyInvoice,
+        invoiceNumber: 'IMI-' + (invoices.length+1).toString().padStart(4, '0'),
+        invoiceIssueDate: todayString,
+        invoiceDeliveryDate: todayString,
+        invoicePaymentDate: deadline.toISOString().substring(0, 10)
+    };
+};
+
 export default function Home() {
     const [users, setUsers] = useState([] as InvoiceUser[]);
+    const [partners, setPartners] = useState([] as InvoicePartner[]);
     const [invoices, setInvoices] = useState([] as Invoice[]);
     const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-    const [currentInvoice, setCurrentInvoice] = useState({...emptyInvoice});
+    const [
+        currentInvoice,
+        setCurrentInvoice] = useState(getNextEmptyInvoice(invoices));
     const session = useSession();
 
     const saveInvoice = async () => {
@@ -60,7 +77,7 @@ export default function Home() {
                 modifiedBy: session?.data?.user?.email,
                 modifiedAt: now
             } as DocumentData);
-            setCurrentInvoice({...emptyInvoice});
+            setCurrentInvoice(getNextEmptyInvoice(invoices));
             setShowInvoiceModal(false);
             getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
         } else if (currentInvoice.items && currentInvoice.items.length) {
@@ -70,7 +87,7 @@ export default function Home() {
                 createdBy: session?.data?.user?.email,
                 createdAt: now
             } as DocumentData, {merge: true});
-            setCurrentInvoice({...emptyInvoice});
+            setCurrentInvoice(getNextEmptyInvoice(invoices));
             setShowInvoiceModal(false);
             getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
         } else {
@@ -89,9 +106,17 @@ export default function Home() {
         setShowInvoiceModal(true);
     };
 
+    const refreshCollections = async () => {
+        const invoices = await getCollection(firebaseCollections.invoices);
+        const users = await getCollection(firebaseCollections.users);
+        const partners = await getCollection(firebaseCollections.partners);
+        setInvoices(invoices as Invoice[]);
+        setUsers(users as InvoiceUser[])
+        setPartners(partners as InvoicePartner[])
+    };
+
     useEffect(() => {
-        getCollection(firebaseCollections.users).then((users) => setUsers(users as InvoiceUser[]));
-        getCollection(firebaseCollections.invoices).then((invoices) => setInvoices(invoices as Invoice[]));
+        void refreshCollections();
     }, []);
 
     return (
@@ -179,6 +204,7 @@ export default function Home() {
                 currentInvoice={currentInvoice}
                 setCurrentInvoice={setCurrentInvoice}
                 users={users}
+                partners={partners}
             />
         </Layout>
 

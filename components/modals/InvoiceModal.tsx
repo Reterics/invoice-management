@@ -1,11 +1,10 @@
 import React, {ChangeEvent, SyntheticEvent, useState} from "react";
 import {InvoiceModalInput} from "@/src/types/modals";
 import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
-import {Invoice, InvoiceConstants, InvoiceItem, InvoiceUser} from "@/src/types/general";
+import {Invoice, InvoiceConstants, InvoiceItem, InvoicePartner, InvoiceUser} from "@/src/types/general";
 import {StyledSelectOption} from "@/src/types/inputs";
 import StyledInput from "@/components/lib/StyledInput";
 import InvoiceItemsTable from "@/components/InvoiceItemsTable";
-import {it} from "node:test";
 
 export default function InvoiceModal({
     visible,
@@ -13,10 +12,12 @@ export default function InvoiceModal({
     currentInvoice,
     setCurrentInvoice,
     users,
+    partners,
     onSave
 }: InvoiceModalInput) {
 
     const [supplier, setSupplier] = useState<InvoiceUser|undefined>(undefined);
+    const [partner, setPartner] = useState<InvoicePartner|undefined>(undefined);
 
     const handleOnClose = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
@@ -44,6 +45,15 @@ export default function InvoiceModal({
         setSupplier(selected ? {...selected} : undefined);
     };
 
+    const changePartner = (e: SyntheticEvent<HTMLSelectElement, Event>) => {
+        const select = e.target as HTMLSelectElement;
+        const value = select.options[select.selectedIndex].value;
+
+        const selected = partners.find(user=> value === user.id);
+
+        setPartner(selected ? {...selected} : undefined);
+    };
+
     if (!visible) return null;
 
     return (
@@ -62,75 +72,110 @@ export default function InvoiceModal({
                     <div className="flex flex-row justify-evenly mb-2">
                         <div className="w-full max-w-screen-lg p-6 bg-white border border-gray-200 rounded-lg shadow
                         dark:bg-gray-800 dark:border-gray-700 mr-1 pt-9">
-                            <StyledSelect
-                                type="text" name="supplierName"
-                                options={users.map(user=> {
-                                    return {name: user.supplierName, value: user.id}
-                                }) as unknown as StyledSelectOption[]}
-                                value={supplier ? supplier.id : undefined}
-                                onSelect={(e) => changeSupplier(e)}
-                                label={ !supplier ? "Select Supplier" : "Supplier" }
-                            />
+                            <div className="flex md:gap-3">
+
+                                <StyledSelect
+                                    type="text" name="supplierName"
+                                    options={users.map(user=> {
+                                        return {name: user.supplierName, value: user.id}
+                                    }) as unknown as StyledSelectOption[]}
+                                    value={supplier ? supplier.id : undefined}
+                                    onSelect={(e) => changeSupplier(e)}
+                                    label={ !supplier ? "Select Supplier" : "Supplier" }
+                                />
+                                <button type="button" className="text-gray-900 bg-white border border-gray-300
+                                focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200
+                                font-medium rounded-lg text-sm px-5 mr-2 dark:bg-gray-800
+                                dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600
+                                dark:focus:ring-gray-700 whitespace-nowrap">Add User</button>
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-3">
+                                <StyledSelect
+                                    type="text" name="invoiceCategory"
+                                    options={textToOptions(InvoiceConstants.invoice.invoiceCategory, undefined)}
+                                    value={currentInvoice.invoiceCategory ? currentInvoice.invoiceCategory : undefined}
+                                    onSelect={(e) => changeType(
+                                        e as unknown as ChangeEvent<HTMLInputElement>, 'invoiceCategory')}
+                                    label="Invoice Type"
+                                />
+                                <StyledSelect
+                                    type="text" name="invoiceAppearance"
+                                    options={textToOptions(InvoiceConstants.invoice.invoiceAppearance, undefined)}
+                                    value={currentInvoice.invoiceAppearance ? currentInvoice.invoiceAppearance : undefined}
+                                    onSelect={(e) => changeType(
+                                        e as unknown as ChangeEvent<HTMLInputElement>, 'invoiceAppearance')}
+                                    label="Invoice Appearance"
+                                />
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-3">
+                                <StyledInput
+                                    type="text" name="invoiceNumber"
+                                    value={currentInvoice.invoiceNumber}
+                                    onChange={(e) => changeType(e, 'invoiceNumber')}
+                                    label="Issue Number"
+                                />
+                                <StyledSelect
+                                    type="text" name="invoicePaymentMethod"
+                                    options={textToOptions(InvoiceConstants.invoice.invoicePaymentMethod, undefined)}
+                                    value={currentInvoice.invoicePaymentMethod ? currentInvoice.invoicePaymentMethod : undefined}
+                                    onSelect={(e) => changeType(
+                                        e as unknown as ChangeEvent<HTMLInputElement>, 'invoicePaymentMethod')}
+                                    label="Payment Method"
+                                />
+                            </div>
                         </div>
                         <div className="w-full max-w-screen-lg p-6 bg-white border border-gray-200 rounded-lg shadow
                         dark:bg-gray-800 dark:border-gray-700 mb-1 pt-9">
-                            <StyledSelect
-                                type="text" name="customerType"
-                                options={textToOptions(InvoiceConstants.customer.customerType, undefined)}
-                                value={currentInvoice.customerType ? currentInvoice.customerType : undefined}
-                                onSelect={(e) => changeType(
-                                    e as unknown as ChangeEvent<HTMLInputElement>, 'customerType')}
-                                label="Customer Type"
-                            />
-                            <StyledInput
-                                type="text" name="customerName"
-                                value={currentInvoice.customerName}
-                                onChange={(e) => changeType(e, 'customerName')}
-                                label="Customer Name"
-                            />
-                            <div className="grid md:grid-cols-3 md:gap-3">
+                            <div className="flex md:gap-3">
                                 <StyledSelect
-                                    type="text" name="customerCountry"
-                                    options={textToOptions(InvoiceConstants.customer.customerCountry, undefined)}
-                                    value={currentInvoice.customerCountry ? currentInvoice.customerCountry : undefined}
-                                    onSelect={(e) => changeType(
-                                        e as unknown as ChangeEvent<HTMLInputElement>, 'customerCountry')}
-                                    label="Country"
+                                    type="text" name="customer"
+                                    options={partners.map(user=> {
+                                        return {name: user.customerName, value: user.id}
+                                    }) as unknown as StyledSelectOption[]}
+                                    value={partner ? partner.id : undefined}
+                                    onSelect={(e) => changePartner(e)}
+                                    label={ !partner ? "Select Partner" : "Partner" }
                                 />
-                                <StyledInput
-                                    type="text" name="customerPostCode"
-                                    value={currentInvoice.customerPostCode}
-                                    onChange={(e) => changeType(e, 'customerPostCode')}
-                                    label="Post Code"
-                                />
-
-                                <StyledInput
-                                    type="text" name="customerTown"
-                                    value={currentInvoice.customerTown}
-                                    onChange={(e) => changeType(e, 'customerTown')}
-                                    label="Town"
-                                />
+                                <button type="button" className="text-gray-900 bg-white border border-gray-300
+                                focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200
+                                font-medium rounded-lg text-sm px-5 mr-2 dark:bg-gray-800
+                                dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600
+                                dark:focus:ring-gray-700 whitespace-nowrap">Add Partner</button>
                             </div>
                             <div className="grid md:grid-cols-3 md:gap-3">
                                 <StyledInput
-                                    type="text" name="customerStreetName"
-                                    value={currentInvoice.customerStreetName}
-                                    onChange={(e) => changeType(e, 'customerStreetName')}
-                                    label="Street Type"
-                                />
-                                <StyledSelect
-                                    type="text" name="customerStreetCategory"
-                                    options={textToOptions(InvoiceConstants.customer.customerStreetCategory, undefined)}
-                                    value={currentInvoice.customerStreetCategory ? currentInvoice.customerStreetCategory : undefined}
-                                    onSelect={(e) => changeType(
-                                        e as unknown as ChangeEvent<HTMLInputElement>, 'customerStreetCategory')}
-                                    label="Street Type"
+                                    type="date" name="invoiceIssueDate"
+                                    value={currentInvoice.invoiceIssueDate}
+                                    onChange={(e) => changeType(e, 'invoiceIssueDate')}
+                                    label="Issue Date"
                                 />
                                 <StyledInput
-                                    type="text" name="customerAddress"
-                                    value={currentInvoice.customerAddress}
-                                    onChange={(e) => changeType(e, 'customerAddress')}
-                                    label="Address"
+                                    type="date" name="invoiceDeliveryDate"
+                                    value={currentInvoice.invoiceDeliveryDate}
+                                    onChange={(e) => changeType(e, 'invoiceDeliveryDate')}
+                                    label="Delivery Date"
+                                />
+                                <StyledInput
+                                    type="date" name="invoicePaymentDate"
+                                    value={currentInvoice.invoicePaymentDate}
+                                    onChange={(e) => changeType(e, 'invoicePaymentDate')}
+                                    label="Payment Deadline"
+                                />
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-3">
+                                <StyledSelect
+                                    type="text" name="invoiceCurrency"
+                                    options={textToOptions(InvoiceConstants.invoice.invoiceCurrency, undefined)}
+                                    value={currentInvoice.invoiceCurrency ? currentInvoice.invoiceCurrency : undefined}
+                                    onSelect={(e) => changeType(
+                                        e as unknown as ChangeEvent<HTMLInputElement>, 'invoiceCurrency')}
+                                    label="Currency"
+                                />
+                                <StyledInput
+                                    type="number" name="invoiceExchangeRate"
+                                    value={currentInvoice.invoiceExchangeRate}
+                                    onChange={(e) => changeType(e, 'invoiceExchangeRate')}
+                                    label="Exchange Rate"
                                 />
                             </div>
 
@@ -138,8 +183,8 @@ export default function InvoiceModal({
                     </div>
                     <div className="flex flex-row justify-evenly mb-2">
                         <div className="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <h4>Invoice Items</h4>
                             <InvoiceItemsTable
+                                invoice={currentInvoice}
                                 items={currentInvoice.items}
                                 setItems={(items: InvoiceItem[]) => setCurrentInvoice({...currentInvoice, items:items})}
                             />

@@ -36,7 +36,15 @@ export interface InvoicePartner {
     customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY'
 }
 
-enum VatRate {
+enum VatRateSimplified {
+    _27 = 0.2126,
+    _18 = 0.1525,
+    _5 = 0.0476,
+    _0 = 0,
+    TAM = 0,
+    AAM = 0
+}
+enum VatRateNormal {
     _27 = 0.2126,
     _18 = 0.1525,
     _5 = 0.0476,
@@ -53,7 +61,7 @@ export interface InvoiceItem {
     unitOfMeasure: "PIECE"|"KILOGRAM"|"TON"|"KWH"|"DAY"|"HOUR"|"MINUTE"|"MONTH"|"LITER"|"KILOMETER"|"CUBIC_METERI"|"METER"|"LINEAR_METERE"|"CARTONT"|"PACK"|"OWN",
     unitPrice: number,
     lineNetAmountData: number,
-    lineVatRate: VatRate,
+    lineVatRate: VatRateSimplified | VatRateNormal,
     lineVatData: number,
     lineGrossAmountData: number,
     lineDescription: string,
@@ -85,6 +93,7 @@ export interface Invoice {
     invoiceCategory: 'SIMPLIFIED'|'NORMAL'|'AGGREGATE',
     invoiceIssueDate: string,
     invoiceDeliveryDate: string,
+    invoicePaymentDate: string,
     invoiceCurrency: string,
     invoiceExchangeRate: string,
     invoicePaymentMethod: 'CASH'|'TRANSFER'|'CARD'|'VOUCHER'|'Other',
@@ -112,15 +121,24 @@ export const InvoiceConstants = {
             productCodeCategory: ['OWN', 'VTSZ', 'SZJ', 'KN', 'AHK', 'CSK', 'KT', 'EJ', 'TESZOR', 'OTHER'],
             unitOfMeasure: ["PIECE", "KILOGRAM", "TON", "KWH", "DAY", "HOUR", "MINUTE", "MONTH", "LITER", "KILOMETER",
                 "CUBIC_METERI", "METER", "LINEAR_METERE", "CARTONT", "PACK", "OWN"],
-            lineVatRate: [
-                VatRate._27,
-                VatRate._18,
-                VatRate._5,
-                VatRate._0,
-                VatRate.TAM,
-                VatRate.AAM
+            lineVatRateSimplified: [
+                VatRateSimplified._27,
+                VatRateSimplified._18,
+                VatRateSimplified._5,
+                VatRateSimplified._0,
+                VatRateSimplified.TAM,
+                VatRateSimplified.AAM
+            ],
+            lineVatRateNormal: [
+                VatRateNormal._27,
+                VatRateNormal._18,
+                VatRateNormal._5,
+                VatRateNormal._0,
+                VatRateNormal.TAM,
+                VatRateNormal.AAM
             ]
-        }
+        },
+        invoiceCurrency: ['HUF']
     },
     customer: {
         customerType: ['PERSON', 'COMPANY_HU', 'COMPANY_EU', 'COMPANY'],
@@ -201,5 +219,6 @@ export const InvoiceConstants = {
 
 export interface InvoiceItemsTableType {
     items: InvoiceItem[],
-    setItems: Function
+    setItems: Function,
+    invoice: Invoice
 }
