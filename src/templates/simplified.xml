@@ -7,11 +7,13 @@
         <invoice>
             <invoiceHead>
                 <supplierInfo>
+                    {#supplierTaxNumber}}
                     <supplierTaxNumber>
                         <base:taxpayerId>{{supplierTaxpayerId}}</base:taxpayerId>
                         <base:vatCode>{{supplierVatCode}}</base:vatCode>
                         <base:countyCode>{{supplierCountyCode}}</base:countyCode>
                     </supplierTaxNumber>
+                    {/#supplierTaxNumber}}
                     <supplierName>{{supplierName}}</supplierName>
                     <supplierAddress>
                         <base:detailedAddress>
@@ -22,8 +24,8 @@
                             <base:publicPlaceCategory>{{supplierStreet}}</base:publicPlaceCategory>
                             <base:number>{{supplierAddress}}</base:number>
                         </base:detailedAddress>
-                    </supplierAddress>
-                    <supplierBankAccountNumber>{{supplierBankAccountNumber}}</supplierBankAccountNumber>
+                    </supplierAddress>{#supplierBankAccountNumber}}
+                    <supplierBankAccountNumber>{{supplierBankAccountNumber}}</supplierBankAccountNumber>{/#supplierBankAccountNumber}}
                 </supplierInfo>
                 <customerInfo>
                     <customerVatStatus>{{customerVatStatus}}</customerVatStatus>
@@ -44,7 +46,7 @@
                             <base:postalCode>{{customerPostCode}}</base:postalCode>
                             <base:city>{{customerTown}}</base:city>
                             <base:streetName>{{customerStreetName}}</base:streetName>
-                            <base:publicPlaceCategory>{{customerStreet}}</base:publicPlaceCategory>
+                            <base:publicPlaceCategory>{{customerStreetCategory}}</base:publicPlaceCategory>
                             <base:number>{{customerAddress}}</base:number>
                         </base:detailedAddress>
                     </customerAddress>
@@ -62,7 +64,7 @@
             </invoiceHead>
             <invoiceLines>
                 <mergedItemIndicator>false</mergedItemIndicator>
-                {>invoiceLines}}
+                {>items}}
                 <line>
                     <lineNumber>{{+id}}</lineNumber>
                     <productCodes>
@@ -86,7 +88,7 @@
                         <lineGrossAmountSimplifiedHUF>{{+lineGrossAmountData}}</lineGrossAmountSimplifiedHUF>
                     </lineAmountsSimplified>
                 </line>
-                {/>invoiceLines}}
+                {/>items}}
             </invoiceLines>
             <invoiceSummary>
                 {>summaryLines}}

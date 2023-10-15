@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@redaty/lejs": "^1.0.3",
     "firebase": "^10.4.0",
     "next": "latest",
     "next-auth": "latest",
@@ -23,8 +24,8 @@
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
+    "react-icons": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest",
-    "react-icons": "latest"
+    "typescript": "latest"
   }
 }
