@@ -1,7 +1,8 @@
-import {Account, getServerSession, Profile, User} from "next-auth"
+import {Account, getServerSession, Profile, Session, User} from "next-auth"
 import Google from "next-auth/providers/google"
 import {JWT} from "next-auth/jwt";
 import {AdapterUser} from "next-auth/adapters";
+import {NextApiRequest, NextApiResponse} from "next";
 
 // Read more at: https://next-auth.js.org/getting-started/typescript#module-augmentation
 declare module "next-auth/jwt" {
@@ -31,8 +32,13 @@ export const config = {
 
 // Helper function to get session without passing config every time
 // https://next-auth.js.org/configuration/nextjs#getserversession
-export function auth(...args: []) {
-    return getServerSession(...args, config as any)
+export function auth(request: NextApiRequest, response: Response|null): Promise<Session|null> {
+    const res = response ? response : new Response(null, {});
+    return getServerSession(request, {
+        ...res,
+        getHeader: (name: string) => res.headers?.get(name),
+        setHeader: (name: string, value: string) => res.headers?.set(name, value),
+    } as unknown as NextApiResponse, config as any)
 }
 
 // We recommend doing your own environment variable validation
