@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google"
 import {JWT} from "next-auth/jwt";
 import {AdapterUser} from "next-auth/adapters";
 import {NextApiRequest, NextApiResponse} from "next";
+import {NextRequest} from "next/server";
 
 // Read more at: https://next-auth.js.org/getting-started/typescript#module-augmentation
 declare module "next-auth/jwt" {
@@ -32,9 +33,9 @@ export const config = {
 
 // Helper function to get session without passing config every time
 // https://next-auth.js.org/configuration/nextjs#getserversession
-export function auth(request: NextApiRequest, response: Response|null): Promise<Session|null> {
+export function auth(request: NextRequest, response: Response|null): Promise<Session|null> {
     const res = response ? response : new Response(null, {});
-    return getServerSession(request, {
+    return getServerSession(request as unknown as NextApiRequest, {
         ...res,
         getHeader: (name: string) => res.headers?.get(name),
         setHeader: (name: string, value: string) => res.headers?.set(name, value),

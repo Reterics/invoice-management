@@ -1,9 +1,9 @@
 import {getById} from "@/src/firebase/config";
 import {auth} from "@/auth";
-import {NextApiRequest} from "next";
+import {NextRequest} from "next/server";
 
 export async function GET(
-    request: NextApiRequest,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     const session = await auth(request, null);

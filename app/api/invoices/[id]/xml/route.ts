@@ -3,10 +3,10 @@ import { promises as fs } from 'fs';
 import {Invoice} from "@/src/types/general";
 import {render} from '@redaty/lejs';
 import {auth} from "@/auth";
-import {NextApiRequest} from "next";
+import {NextRequest} from "next/server";
 
 export async function GET(
-    request: NextApiRequest,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     const session = await auth(request, null);
