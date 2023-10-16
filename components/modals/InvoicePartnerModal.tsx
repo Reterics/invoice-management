@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, ReactEventHandler, SyntheticEvent} from "react";
 import {InvoicePartnerModalInput, InvoiceUserModalInput} from "@/src/types/modals";
 import {InvoiceConstants, InvoicePartner} from "@/src/types/general";
 import StyledInput from "@/components/lib/StyledInput";
@@ -13,6 +13,24 @@ export default function InvoicePartnerModal({ visible, onClose, currentPartner, 
             onClose();
         }
     };
+
+    const changeCustomerType = (event: SyntheticEvent<HTMLSelectElement, Event>) => {
+        const target = event.target as HTMLSelectElement;
+        const customerType = target.value;
+        let customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER';
+        switch (customerType) {
+            case 'COMPANY_EU':
+            case 'COMPANY':
+                customerVatStatus =  'OTHER';
+                break;
+            case 'COMPANY_HU':
+                customerVatStatus =  'DOMESTIC';
+                break;
+            default:
+                customerVatStatus =  'PRIVATE_PERSON';
+        }
+        setCurrentPartner({...currentPartner, customerType, customerVatStatus});
+    }
 
     const changeType = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
         const value = e.target.value;
@@ -50,8 +68,7 @@ export default function InvoicePartnerModal({ visible, onClose, currentPartner, 
                         type="text" name="customerType"
                         options={textToOptions(InvoiceConstants.customer.customerType, undefined)}
                         value={currentPartner.customerType ? currentPartner.customerType : undefined}
-                        onSelect={(e) => changeType(
-                            e as unknown as ChangeEvent<HTMLInputElement>, 'customerType')}
+                        onSelect={changeCustomerType}
                         label="Customer Type"
                     />
 
@@ -61,12 +78,15 @@ export default function InvoicePartnerModal({ visible, onClose, currentPartner, 
                             value={currentPartner.customerTaxNumber}
                             onChange={(e) => changeType(e, 'customerTaxNumber')}
                             label="Tax Number"
+                            pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}"
+                            maxLength={13}
                         />
                         <StyledInput
                             type="text" name="customerBankAccountNumber"
                             value={currentPartner.customerBankAccountNumber}
                             onChange={(e) => changeType(e, 'customerBankAccountNumber')}
                             label="Back Account"
+                            pattern="[0-9]{8}[-][0-9]{8}[-][0-9]{8}|[0-9]{8}[-][0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}"
                         />
                     </div>
                     <div className="grid md:grid-cols-3 md:gap-3">

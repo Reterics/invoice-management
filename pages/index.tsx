@@ -26,6 +26,7 @@ export const emptyInvoice = {
     customerAddress: "",
     customerCountry: "",
     customerType: 'PERSON',
+    customerVatStatus: 'PRIVATE_PERSON',
 
     invoiceNumber: "",
     invoiceCategory: 'SIMPLIFIED',

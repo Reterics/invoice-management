@@ -34,6 +34,7 @@ export interface InvoicePartner {
     customerCountry: string,
     customerBankAccountNumber: string,
     customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY'
+    customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER',
 }
 
 enum VatRateSimplified {
@@ -87,7 +88,8 @@ export interface Invoice {
     customerStreetCategory: string,
     customerAddress: string,
     customerCountry: string,
-    customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY'
+    customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY',
+    customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER',
 
     invoiceNumber: string,
     invoiceCategory: 'SIMPLIFIED'|'NORMAL'|'AGGREGATE',
@@ -142,6 +144,7 @@ export const InvoiceConstants = {
     },
     customer: {
         customerType: ['PERSON', 'COMPANY_HU', 'COMPANY_EU', 'COMPANY'],
+        customerVatStatus: ['PRIVATE_PERSON', 'DOMESTIC', 'OTHER'],
         customerCountry: ['HU'],
         customerStreetCategory: [
             "utca",

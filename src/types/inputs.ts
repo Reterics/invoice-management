@@ -6,7 +6,13 @@ export interface StyledInputArgs {
     onChange?: ChangeEventHandler<HTMLInputElement> | undefined,
     type?: string,
     name?: string,
-    label?: string|number
+    label?: string|number,
+    placeholder?: string,
+    pattern?: string,
+    maxLength?: number,
+    min?: string,
+    max?: string,
+    step?: string,
 }
 
 export interface StyledSelectOption {
