@@ -86,7 +86,7 @@ export default function InvoicePartnerModal({ visible, onClose, currentPartner, 
                             value={currentPartner.customerBankAccountNumber}
                             onChange={(e) => changeType(e, 'customerBankAccountNumber')}
                             label="Back Account"
-                            pattern="[0-9]{8}[-][0-9]{8}[-][0-9]{8}|[0-9]{8}[-][0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}"
+                            pattern="[0-9]{8}-[0-9]{8}-[0-9]{8}|[0-9]{8}-[0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}"
                         />
                     </div>
                     <div className="grid md:grid-cols-3 md:gap-3">
