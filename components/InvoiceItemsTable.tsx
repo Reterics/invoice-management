@@ -4,6 +4,7 @@ import React, {ChangeEvent} from "react";
 import StyledSelect, {textToOptions} from "@/components/lib/StyledSelect";
 import StyledInput from "@/components/lib/StyledInput";
 import {getEmptyInvoiceItem} from "@/components/modals/InvoiceModal";
+import { updateItemNumbersByUnitPrice } from "@/src/utils";
 
 export default function InvoiceItemsTable ({
     invoice,
@@ -29,6 +30,14 @@ export default function InvoiceItemsTable ({
     const addItem = () => {
         setItems([...items, currentItem]);
         setCurrentItem(getEmptyInvoiceItem(invoice.invoiceCategory));
+    };
+
+    const changeWithUnitUpdate = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        const value = e.target.value;
+        const obj = {...currentItem};
+        // @ts-ignore
+        obj[key] = value;
+        setCurrentItem(updateItemNumbersByUnitPrice(obj, invoice.invoiceCategory));
     };
 
     return (
@@ -108,7 +117,7 @@ export default function InvoiceItemsTable ({
                     <StyledInput
                         type="number" name="quantity"
                         value={currentItem.quantity}
-                        onChange={(e) => changeType(e, 'quantity')}
+                        onChange={(e) => changeWithUnitUpdate(e, 'quantity')}
                         label="Quantity"
                     />
                 </td>
@@ -126,7 +135,7 @@ export default function InvoiceItemsTable ({
                     <StyledInput
                         type="number" name="unitPrice"
                         value={currentItem.unitPrice}
-                        onChange={(e) => changeType(e, 'unitPrice')}
+                        onChange={(e) => changeWithUnitUpdate(e, 'unitPrice')}
                         label="Unit Price (Ft)"
                     />
                 </td>

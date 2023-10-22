@@ -1,3 +1,4 @@
+import exp from "constants";
 
 export interface InvoiceUser {
     id?: string,
@@ -68,6 +69,8 @@ export interface InvoiceItem {
     lineDescription: string,
 }
 
+export type InvoiceCategory = 'SIMPLIFIED'|'NORMAL'|'AGGREGATE';
+
 export interface Invoice {
     id?: string,
     supplierName?: string,
@@ -92,7 +95,7 @@ export interface Invoice {
     customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER',
 
     invoiceNumber: string,
-    invoiceCategory: 'SIMPLIFIED'|'NORMAL'|'AGGREGATE',
+    invoiceCategory: InvoiceCategory,
     invoiceIssueDate: string,
     invoiceDeliveryDate: string,
     invoicePaymentDate: string,
