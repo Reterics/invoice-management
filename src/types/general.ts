@@ -1,4 +1,12 @@
-import exp from "constants";
+export type InvoiceCategory = 'SIMPLIFIED'|'NORMAL'|'AGGREGATE';
+export type CustomerType = 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY';
+export type VatStatus = 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER';
+export type PaymentMethod = 'CASH'|'TRANSFER'|'CARD'|'VOUCHER'|'Other';
+export type InvoiceAppearance = 'ELECTRONIC'|'PAPER'|'EDI'|'UNKNOWN';
+export type ProductCodeCategory = 'OWN'|'VTSZ'|'SZJ'|'KN'|'AHK'|'CSK'|'KT'|'EJ'|'TESZOR'|'OTHER';
+export type UnitOfMeasure = 'PIECE'|'KILOGRAM'|'TON'|'KWH'|'DAY'|'HOUR'|'MINUTE'|'MONTH'|'LITER'|'KILOMETER'|
+    'CUBIC_METER'|'METER'|'LINEAR_METER'|'CARTON'|'PACK'|'OWN';
+export type LineNatureIndicator = 'SERVICE'|'PRODUCT'|'OTHER';
 
 export interface InvoiceUser {
     id?: string,
@@ -34,8 +42,8 @@ export interface InvoicePartner {
     customerAddress: string,
     customerCountry: string,
     customerBankAccountNumber: string,
-    customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY'
-    customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER',
+    customerType: CustomerType,
+    customerVatStatus: VatStatus,
 }
 
 enum VatRateSimplified {
@@ -46,6 +54,7 @@ enum VatRateSimplified {
     TAM = 0,
     AAM = 0
 }
+
 enum VatRateNormal {
     _27 = 0.27,
     _18 = 0.18,
@@ -56,11 +65,11 @@ enum VatRateNormal {
 }
 
 export interface InvoiceItem {
-    lineNatureIndicator: 'SERVICE'|'PRODUCT'|'OTHER',
-    productCodeCategory: 'OWN'|'VTSZ'|'SZJ'|'KN'|'AHK'|'CSK'|'KT'|'EJ'|'TESZOR'|'OTHER',
+    lineNatureIndicator: LineNatureIndicator,
+    productCodeCategory: ProductCodeCategory,
     productCodeValue: string,
     quantity: number,
-    unitOfMeasure: "PIECE"|"KILOGRAM"|"TON"|"KWH"|"DAY"|"HOUR"|"MINUTE"|"MONTH"|"LITER"|"KILOMETER"|"CUBIC_METERI"|"METER"|"LINEAR_METERE"|"CARTONT"|"PACK"|"OWN",
+    unitOfMeasure: UnitOfMeasure,
     unitPrice: number,
     lineNetAmountData: number,
     lineVatRate: VatRateSimplified | VatRateNormal,
@@ -69,7 +78,6 @@ export interface InvoiceItem {
     lineDescription: string,
 }
 
-export type InvoiceCategory = 'SIMPLIFIED'|'NORMAL'|'AGGREGATE';
 
 export interface Invoice {
     id?: string,
@@ -91,8 +99,8 @@ export interface Invoice {
     customerStreetCategory: string,
     customerAddress: string,
     customerCountry: string,
-    customerType: 'PERSON'|'COMPANY_HU'|'COMPANY_EU'|'COMPANY',
-    customerVatStatus: 'PRIVATE_PERSON'|'DOMESTIC'|'OTHER',
+    customerType: CustomerType,
+    customerVatStatus: VatStatus,
 
     invoiceNumber: string,
     invoiceCategory: InvoiceCategory,
@@ -101,8 +109,8 @@ export interface Invoice {
     invoicePaymentDate: string,
     invoiceCurrency: string,
     invoiceExchangeRate: string,
-    invoicePaymentMethod: 'CASH'|'TRANSFER'|'CARD'|'VOUCHER'|'Other',
-    invoiceAppearance: 'ELECTRONIC'|'PAPER'|'EDI'|'UNKNOWN',
+    invoicePaymentMethod: PaymentMethod,
+    invoiceAppearance: InvoiceAppearance,
     invoiceGrossAmount: string,
 
     items: InvoiceItem[],
