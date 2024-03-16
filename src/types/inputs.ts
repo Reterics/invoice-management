@@ -1,5 +1,4 @@
 import {ChangeEventHandler, ReactEventHandler} from "react";
-import exp from "constants";
 
 export interface StyledInputArgs {
     value?: string | number | readonly string[]
